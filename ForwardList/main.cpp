@@ -44,11 +44,34 @@ public:
 		//3) Голову перенаправляем на новый элемент
 		Head = New;
 	}
+	void push_back(int Data)
+	{
+		//поскольку push_back() не умеет работать с пустым списком мы проверяем если список пуст вызываем метод push_front, который умеет работать с пустым списком
+		if (Head == nullptr)return push_front(Data);
+		//1) Создаем новый элемент
+		Element* New = new Element(Data);
+		
+		//2) Доходим до конца списка:
+		Element* Temp = Head;
+		//while ((*Temp).pNext)
+		while (Temp->pNext)Temp = Temp->pNext;    //запись (Temp!=nullptr) равносильна (Temp)
+		//3) После того как мы отказались в конце списка, можно добавлять значения в конец.
+		
+		Temp->pNext = New;
+
+
+	}
+	void pop_front(int Data)
+	{
+
+	}
 
 	//                       Metods:
 	void print()const
 	{
 		Element* Temp = Head; // TEMP это итератор, итератор - это указатель, при помощи которого можно получить доступ к элементам структуры данных.
+		// Temp - указатель Temp;
+		// Temp-> - элемент Temp;
 		while (Temp)
 		{
 			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
@@ -65,7 +88,10 @@ void main()
 	ForwardList list;
 	for (int i = 0; i < n; i++)
 	{
-		list.push_front(rand() % 100);
+		//list.push_front(rand() % 100);
+		list.push_back(rand() % 100);
 	}
+	list.print();
+	list.push_back(123);
 	list.print();
 }
