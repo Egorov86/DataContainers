@@ -8,17 +8,21 @@ class Element
 {
 	int Data;
 	Element* pNext;
+	static int count;
 public:
 	Element(int Data, Element* pNext = nullptr) : Data(Data), pNext(pNext)
 	{
+		count++;
 		cout << "EConstructor:\t" << this << endl;
 	}
 	~Element()
 	{
+		count--;
 		cout << "EDestructor:\t" << this << endl;
 	}
 	friend class ForwardList; // дружеств функция
 };
+int Element::count = 0;
 
 class ForwardList
 {
@@ -31,6 +35,7 @@ public:
 	}
 	~ForwardList()
 	{
+		while (Head)pop_front();
 		cout << "LDestructor:\t" << this << endl;
 	}
 	//        Adding elements;
@@ -61,18 +66,69 @@ public:
 
 
 	}
+	void insert(int Index, int Data)
+	{
+		if (Index > Head->count)
+		{
+			cout << "Error: out of range" << endl;
+			return;
+		}
+		if (Index == 0)return push_front(Data);
+		//1) создаем новый элемент:
+		Element* New = new Element(Data);
+		//2) доходим до нужного элемента
+		Element* Temp = Head;
+		for (int i = 0; i < Index - 1; i++)
+		{
+			if (Temp->pNext == nullptr)break;
+			Temp = Temp->pNext;
+		}
+
+		//3)Вставляем элемент в список
+		New->pNext = Temp->pNext;
+		Temp->pNext = New;
+	}
+	//                Removing elemets:
 	void pop_front()
 	{
+		if (Head == nullptr)return;
+		//1)Запоминаем адрес удаляемого элемента
+		Element* Erased = Head;
+		//2)Исключаем удаляемый элемент из списка
+		Head = Head->pNext;
+		//3)Удалчем элемент из памяти
+		delete Erased;
+		/*
 		//проверяю на пустой(нулевой) список.
 		if (Head == nullptr)return;
 		// удаляем первый элемент списка
 		Element* OldHead = Head;
 		Head = Head->pNext;
 		// удаляем старый первый элемент
-		delete OldHead;      
+		delete OldHead;
+		------------
+		new      -  создвет объект в динмич памяти
+		new[]    -  создвет массив объектов в динмич памяти
+
+		delete   - удаляет 1 объект из динамич памяти 
+		delete[] - удаляет массив объектов из динамич памяти 
+		delete new ....[...];  //behavior is undefined повед не определено
+		delete [] new ....;  //behavior is undefined повед не определено
+		
+		*/
 	}
 	void pop_back()
 	{
+		if (Head->pNext == nullptr)return pop_front();
+		//1)доходим до предпосл элемента
+		Element* Temp = Head;
+		while (Temp->pNext->pNext)Temp = Temp->pNext;
+		//2)удаляем последний элемент
+		delete Temp->pNext;
+		//3) Обнуляем указатель на посл элемент
+		Temp->pNext = nullptr;
+
+		/*
 		//1)проверяю на пустой(нулевой) список.
 		if (Head == nullptr)return;
 		//2) Доходим до конца списка:
@@ -93,7 +149,7 @@ public:
 			}
 			Pred->pNext = nullptr;
 			delete The_end;
-		}
+		}*/
 	}
 
 
@@ -108,6 +164,7 @@ public:
 			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 			Temp = Temp->pNext; // переход на следующий элемент.
 		}
+		cout << "Кол-во элем-ов списка: " << Head->count << endl;
 	}
 };
 
@@ -133,4 +190,10 @@ void main()
 	list.pop_back();
 	list.print();
 	cout << delimiter << endl;
+	int index;
+	int value;
+	cout << "Введите индекс добавляемого элемента: "; cin >> index;
+	cout << "Введите значение добавляемого элемента: "; cin >> value;
+	list.insert(index, value);
+	list.print();
 }
