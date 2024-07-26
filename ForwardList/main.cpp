@@ -3,7 +3,7 @@
 using namespace std;
 
 #define tab "\t"
-#define delimiter "\n----------------------n"
+#define delimiter "\n-----------------------------------------------------\n"
 class Element
 {
 	int Data;
@@ -46,7 +46,7 @@ public:
 	}
 	void push_back(int Data)
 	{
-		//поскольку push_back() не умеет работать с пустым списком мы проверяем если список пуст вызываем метод push_front, который умеет работать с пустым списком
+		//поскольку push_back() не умеет работать с пустым списком мы проверяем и если список пуст вызываем метод push_front, который умеет работать с пустым списком
 		if (Head == nullptr)return push_front(Data);
 		//1) Создаем новый элемент
 		Element* New = new Element(Data);
@@ -54,17 +54,48 @@ public:
 		//2) Доходим до конца списка:
 		Element* Temp = Head;
 		//while ((*Temp).pNext)
-		while (Temp->pNext)Temp = Temp->pNext;    //запись (Temp!=nullptr) равносильна (Temp)
-		//3) После того как мы отказались в конце списка, можно добавлять значения в конец.
+		while (Temp->pNext)Temp = Temp->pNext;
+		//3) После того как мы оказались в конце списка, можно добавлять значения в конец.
 		
 		Temp->pNext = New;
 
 
 	}
-	void pop_front(int Data)
+	void pop_front()
 	{
-
+		//проверяю на пустой(нулевой) список.
+		if (Head == nullptr)return;
+		// удаляем первый элемент списка
+		Element* OldHead = Head;
+		Head = Head->pNext;
+		// удаляем старый первый элемент
+		delete OldHead;      
 	}
+	void pop_back()
+	{
+		//1)проверяю на пустой(нулевой) список.
+		if (Head == nullptr)return;
+		//2) Доходим до конца списка:
+		Element* The_end = Head;
+		while (The_end->pNext)The_end = The_end->pNext;    //запись (The_end->pNext) равносильна (The_end->pNext!=nullptr)
+		//3) Удаляем последний элемент и голову направляем на nullptr
+		if (The_end == Head)
+		{
+			delete Head; Head = nullptr; // если список был из одного элеимента
+		}
+		//4) Удаляем последний элемент и направляем указатель предыдущего на nullptr
+		else
+		{
+			Element* Pred = Head;
+			while (Pred->pNext != The_end)
+			{
+				Pred = Pred->pNext; 
+			}
+			Pred->pNext = nullptr;
+			delete The_end;
+		}
+	}
+
 
 	//                       Metods:
 	void print()const
@@ -92,6 +123,14 @@ void main()
 		list.push_back(rand() % 100);
 	}
 	list.print();
+	cout << delimiter << endl;
 	list.push_back(123);
 	list.print();
+	cout << delimiter << endl;
+	list.pop_front();
+	list.print();
+	cout << delimiter << endl;
+	list.pop_back();
+	list.print();
+	cout << delimiter << endl;
 }
