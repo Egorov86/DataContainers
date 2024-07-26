@@ -45,10 +45,54 @@ public:
 
 		}
 	}
+	ForwardList(const ForwardList& other) : ForwardList()
+	{
+		*this = other;  // Повторно используем код CopyAssignment
+		cout << "CopyConstructor:\t" << this << endl;
+	}
+	ForwardList(ForwardList&& other) :ForwardList()
+	{
+		*this = std::move(other); // функция std::move принудительно вызывает MoveConstructorдля класса
+		cout << "MoveConstructor:\t" << this << endl;
+	}
 	~ForwardList()
 	{
 		while (Head)pop_front();
 		cout << "LDestructor:\t" << this << endl;
+	}
+	//                       Operators:
+	ForwardList& operator=(const ForwardList& other)
+	{
+		if (this == &other)return *this; 
+		this->~ForwardList();
+		while (Head)pop_front();
+		for (Element* Temp = other.Head; Temp = Temp->pNext)
+			push_back(Temp->Data);
+		cout << "CopyAssignment:\t" << this << endl;
+		return *this;
+	}
+	ForwardList& operator=(ForwardList&& other)
+	{
+		if (this == &other)return *this;
+		this->~ForwardList();
+		this->Head = other.Head;
+		this->size = other.size;
+		other.Head = nullptr;
+		other.size = 0;
+		cout << "MoveConstructor:\t" << this << endl;
+	}
+
+	int& operator[](int index)
+	{
+		Element* Temp = Head;
+		for (int i = 0; i < index; i++)Temp = Temp->pNext;
+		return Temp->Data;
+	}
+	const int& operator[](int index)const
+	{
+		Element* Temp = Head;
+		for (int i = 0; i < index; i++)Temp = Temp->pNext;
+		return Temp->Data;
 	}
 	//        Adding elements;
 	void push_front(int Data)
@@ -165,12 +209,7 @@ public:
 		}*/
 	}
 
-	//                       Operators:
-	int& operator[](int index)
-	{
-		Element* Temp = Head;
-		for (int i = 0; i < index; i++)Temp = Temp->pNext; return Temp->Data;
-	}
+	
 
 	//                       Metods:
 	void print()const
@@ -188,9 +227,17 @@ public:
 	}
 };
 
+ForwardList operator+(const ForwardList& left, const ForwardList& right)
+{
+	ForwardList buffer;
+	for (int i = 0; i < left.get_size(); i++) buffer.push_back(left[i]);
+	for (int i = 0; i < right.get_size(); i++) buffer.push_back(right[i]);
+	return buffer;
+
+}
 //#define BASE_CHECK
 //#define COUNT_CHECK
-#define SIZE_CONSTRUCTOR_CHECK
+//#define SIZE_CONSTRUCTOR_CHECK
 void main()
 {
 	setlocale(LC_ALL, "Rus");
@@ -243,5 +290,24 @@ void main()
 	}
 	cout << endl;
 #endif // SIZE_CONSTRUCTOR_CHECK
+
+	ForwardList list1;
+	list1.push_back(3);
+	list1.push_back(5);
+	list1.push_back(8);
+	list1.push_back(13);
+	list1.push_back(21);
+	list1.print();
+
+	ForwardList list2;
+	list2.push_front(34);
+	list2.push_front(55);
+	list2.push_front(89);
+	list2.print();
+
+	//ForwardList list3 = list1 + list2; // COPYCONSTRUCTOR
+	ForwardList list3;                 // COPYASSIGNEMENT
+	list3 = list1 + list2;
+	list3.print();
 
 }
