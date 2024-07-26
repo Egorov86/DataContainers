@@ -27,11 +27,23 @@ int Element::count = 0;
 class ForwardList
 {
 	Element* Head; // Голова списка, указывает на начальный элемент списка
+	int size;
 public:
+	int get_size()
+	{
+		return size;
+	}
 	ForwardList()
 	{ //Конструктор по умолчанию который создает пустой список
 		Head = nullptr;
 		cout << "LConstructor:\t" << this << endl;
+	}
+	explicit ForwardList (int size):ForwardList()
+	{
+		while (size--)push_front(0);
+		{
+
+		}
 	}
 	~ForwardList()
 	{
@@ -63,12 +75,13 @@ public:
 		//3) После того как мы оказались в конце списка, можно добавлять значения в конец.
 		
 		Temp->pNext = New;
+		size++;
 
 
 	}
 	void insert(int Index, int Data)
 	{
-		if (Index > Head->count)
+		if (Index >size)
 		{
 			cout << "Error: out of range" << endl;
 			return;
@@ -127,7 +140,7 @@ public:
 		delete Temp->pNext;
 		//3) Обнуляем указатель на посл элемент
 		Temp->pNext = nullptr;
-
+		size--;
 		/*
 		//1)проверяю на пустой(нулевой) список.
 		if (Head == nullptr)return;
@@ -152,6 +165,12 @@ public:
 		}*/
 	}
 
+	//                       Operators:
+	int& operator[](int index)
+	{
+		Element* Temp = Head;
+		for (int i = 0; i < index; i++)Temp = Temp->pNext; return Temp->Data;
+	}
 
 	//                       Metods:
 	void print()const
@@ -164,13 +183,18 @@ public:
 			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 			Temp = Temp->pNext; // переход на следующий элемент.
 		}
-		cout << "Кол-во элем-ов списка: " << Head->count << endl;
+		cout << "общее кол-во элем-ов: " << Element::count << endl;
+		cout << "Кол-во элем-ов списка: " << size << endl;
 	}
 };
 
+//#define BASE_CHECK
+//#define COUNT_CHECK
+#define SIZE_CONSTRUCTOR_CHECK
 void main()
 {
 	setlocale(LC_ALL, "Rus");
+#ifdef BASE_CHECK
 	int n;
 	cout << "Введите кол-во элементов списка: "; cin >> n;
 	ForwardList list;
@@ -196,4 +220,28 @@ void main()
 	cout << "Введите значение добавляемого элемента: "; cin >> value;
 	list.insert(index, value);
 	list.print();
+#endif // BASE_CHECK
+#ifdef COUNT_CHECK
+	ForwardList list1;
+	list1.push_back(3);
+	list1.push_back(5);
+	list1.push_back(8);
+	list1.push_back(13);
+	list1.push_back(21);
+	list1.print();
+#endif // COUNT_CHECK
+
+#ifdef SIZE_CONSTRUCTOR_CHECK
+	ForwardList list(5);
+	for (int i = 0; i < list.get_size(); i++)
+	{
+		list[i] = rand() % 100;
+	}
+	for (int i = 0; i < list.get_size(); i++)
+	{
+		cout << list[i] << tab;
+	}
+	cout << endl;
+#endif // SIZE_CONSTRUCTOR_CHECK
+
 }
