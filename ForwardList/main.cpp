@@ -1,6 +1,9 @@
 ﻿#include<iostream>
 #include<list>
 using namespace std;
+using std::cin;
+using std::cout;
+using std::endl;
 
 #define tab "\t"
 #define delimiter "\n-----------------------------------------------------\n"
@@ -29,21 +32,19 @@ class ForwardList
 	Element* Head; // Голова списка, указывает на начальный элемент списка
 	int size;
 public:
-	int get_size()
+	int get_size()const
 	{
 		return size;
 	}
 	ForwardList()
 	{ //Конструктор по умолчанию который создает пустой список
 		Head = nullptr;
+		size = 0;
 		cout << "LConstructor:\t" << this << endl;
 	}
 	explicit ForwardList (int size):ForwardList()
 	{
 		while (size--)push_front(0);
-		{
-
-		}
 	}
 	ForwardList(const ForwardList& other) : ForwardList()
 	{
@@ -52,12 +53,12 @@ public:
 	}
 	ForwardList(ForwardList&& other) :ForwardList()
 	{
-		*this = std::move(other); // функция std::move принудительно вызывает MoveConstructorдля класса
+		*this = std::move(other); // функция std::move принудительно вызывает MoveAssignment для класса
 		cout << "MoveConstructor:\t" << this << endl;
 	}
 	~ForwardList()
 	{
-		while (Head)pop_front();
+		while (Head)pop_back();
 		cout << "LDestructor:\t" << this << endl;
 	}
 	//                       Operators:
@@ -66,7 +67,7 @@ public:
 		if (this == &other)return *this; 
 		this->~ForwardList();
 		while (Head)pop_front();
-		for (Element* Temp = other.Head; Temp = Temp->pNext)
+		for (Element* Temp = other.Head;Temp; Temp = Temp->pNext)
 			push_back(Temp->Data);
 		cout << "CopyAssignment:\t" << this << endl;
 		return *this;
@@ -79,16 +80,16 @@ public:
 		this->size = other.size;
 		other.Head = nullptr;
 		other.size = 0;
-		cout << "MoveConstructor:\t" << this << endl;
+		cout << "MoveAssignment:\t" << this << endl;
 	}
 
-	int& operator[](int index)
+	const int& operator[](int index)const
 	{
 		Element* Temp = Head;
 		for (int i = 0; i < index; i++)Temp = Temp->pNext;
 		return Temp->Data;
 	}
-	const int& operator[](int index)const
+	int& operator[](int index)
 	{
 		Element* Temp = Head;
 		for (int i = 0; i < index; i++)Temp = Temp->pNext;
@@ -104,6 +105,7 @@ public:
 		New->pNext = Head;
 		//3) Голову перенаправляем на новый элемент
 		Head = New;
+		size++;
 	}
 	void push_back(int Data)
 	{
@@ -137,13 +139,13 @@ public:
 		Element* Temp = Head;
 		for (int i = 0; i < Index - 1; i++)
 		{
-			if (Temp->pNext == nullptr)break;
+			//if (Temp->pNext == nullptr)break;
 			Temp = Temp->pNext;
 		}
-
 		//3)Вставляем элемент в список
 		New->pNext = Temp->pNext;
 		Temp->pNext = New;
+		size++;
 	}
 	//                Removing elemets:
 	void pop_front()
@@ -155,6 +157,7 @@ public:
 		Head = Head->pNext;
 		//3)Удалчем элемент из памяти
 		delete Erased;
+		size--;
 		/*
 		//проверяю на пустой(нулевой) список.
 		if (Head == nullptr)return;
@@ -222,8 +225,8 @@ public:
 			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 			Temp = Temp->pNext; // переход на следующий элемент.
 		}
-		cout << "общее кол-во элем-ов: " << Element::count << endl;
 		cout << "Кол-во элем-ов списка: " << size << endl;
+		cout << "общее кол-во элем-ов: " << Element::count << endl;
 	}
 };
 
@@ -277,7 +280,6 @@ void main()
 	list1.push_back(21);
 	list1.print();
 #endif // COUNT_CHECK
-
 #ifdef SIZE_CONSTRUCTOR_CHECK
 	ForwardList list(5);
 	for (int i = 0; i < list.get_size(); i++)
@@ -305,9 +307,12 @@ void main()
 	list2.push_front(89);
 	list2.print();
 
-	//ForwardList list3 = list1 + list2; // COPYCONSTRUCTOR
-	ForwardList list3;                 // COPYASSIGNEMENT
-	list3 = list1 + list2;
+	cout << delimiter << endl;
+	//ForwardList list3 = list1 + list2;     // COPYCONSTRUCTOR
+	cout << delimiter << endl;
+	ForwardList list3;
+	cout << delimiter << endl;
+	list3 = list1 + list2;               // COPYASSIGNMENT
+	cout << delimiter << endl;
 	list3.print();
-
 }
