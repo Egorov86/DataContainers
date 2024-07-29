@@ -56,6 +56,12 @@ public:
 		*this = std::move(other); // функция std::move принудительно вызывает MoveAssignment для класса
 		cout << "MoveConstructor:\t" << this << endl;
 	}
+	ForwardList(const initializer_list <int>& il) :ForwardList()
+	{
+		//il.
+		for (const int* it = il.begin(); it != il.end(); it++)
+		push_back(*it);
+	}
 	~ForwardList()
 	{
 		while (Head)pop_back();
@@ -99,12 +105,12 @@ public:
 	void push_front(int Data)
 	{
 		//1) Создаем новый элемент
-		Element* New = new Element(Data);
+		//Element* New = new Element(Data);
 
 		//2) Пристыковываем новый элемент к началу списка
-		New->pNext = Head;
+		//New->pNext = Head;
 		//3) Голову перенаправляем на новый элемент
-		Head = New;
+		Head = new Element(Data, Head);
 		size++;
 	}
 	void push_back(int Data)
@@ -143,8 +149,9 @@ public:
 			Temp = Temp->pNext;
 		}
 		//3)Вставляем элемент в список
-		New->pNext = Temp->pNext;
-		Temp->pNext = New;
+		//New->pNext = Temp->pNext;
+		//Temp->pNext = New
+		Temp->pNext = new Element(Data, Temp->pNext);
 		size++;
 	}
 	//                Removing elemets:
@@ -217,14 +224,17 @@ public:
 	//                       Metods:
 	void print()const
 	{
-		Element* Temp = Head; // TEMP это итератор, итератор - это указатель, при помощи которого можно получить доступ к элементам структуры данных.
-		// Temp - указатель Temp;
-		// Temp-> - элемент Temp;
-		while (Temp)
-		{
+		//Element* Temp = Head; // TEMP это итератор, итератор - это указатель, при помощи которого можно получить доступ к элементам структуры данных.
+		//// Temp - указатель Temp;
+		//// Temp-> - элемент Temp;
+		//while (Temp)
+		//{
+		//	cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
+		//	Temp = Temp->pNext; // переход на следующий элемент.
+		//}
+		for (Element* Temp = Head; Temp; Temp = Temp->pNext)
 			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
-			Temp = Temp->pNext; // переход на следующий элемент.
-		}
+		
 		cout << "Кол-во элем-ов списка: " << size << endl;
 		cout << "общее кол-во элем-ов: " << Element::count << endl;
 	}
@@ -232,8 +242,8 @@ public:
 
 ForwardList operator+(const ForwardList& left, const ForwardList& right)
 {
-	ForwardList buffer;
-	for (int i = 0; i < left.get_size(); i++) buffer.push_back(left[i]);
+	ForwardList buffer=left; // buffer  -  это локальный объект, существующий только в пределах функции оператора +()
+	//for (int i = 0; i < left.get_size(); i++) buffer.push_back(left[i]);
 	for (int i = 0; i < right.get_size(); i++) buffer.push_back(right[i]);
 	return buffer;
 
@@ -241,6 +251,8 @@ ForwardList operator+(const ForwardList& left, const ForwardList& right)
 //#define BASE_CHECK
 //#define COUNT_CHECK
 //#define SIZE_CONSTRUCTOR_CHECK
+//#define OPERATOR_PLUS_CHECK
+//#define INITIALIZER_LIST_CONSTRUCTOR
 void main()
 {
 	setlocale(LC_ALL, "Rus");
@@ -293,6 +305,7 @@ void main()
 	cout << endl;
 #endif // SIZE_CONSTRUCTOR_CHECK
 
+#ifdef OPERATOR_PLUS_CHECK
 	ForwardList list1;
 	list1.push_back(3);
 	list1.push_back(5);
@@ -315,4 +328,21 @@ void main()
 	list3 = list1 + list2;               // COPYASSIGNMENT
 	cout << delimiter << endl;
 	list3.print();
+#endif // OPERATOR_PLUS_CHECK
+
+#ifdef INITIALIZER_LIST_CONSTRUCTOR
+	ForwardList list1 = { 3, 5, 8, 13, 21 }; //instance - экземпляр
+	list1.print();
+#endif // INITIALIZER_LIST_CONSTRUCTOR
+	int arr[] = { 3, 5, 8, 13, 21 };
+	for (int i = 0; i < sizeof(arr) / sizeof(int); i++)
+	{
+		cout << arr[i] << tab;
+	}
+	cout << endl;
+	for (int i : arr)
+	{
+		cout << i << tab;
+	}
+	cout << endl;
 }
