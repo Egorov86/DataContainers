@@ -23,15 +23,65 @@ public:
 		count--;
 		cout << "EDestructor:\t" << this << endl;
 	}
+	friend class Iterator;
 	friend class ForwardList; // дружеств функция
 };
 int Element::count = 0;
+
+class Iterator  // указатель на элемент
+{
+	Element* Temp;
+public:
+	Iterator(Element* Temp) :Temp(Temp)
+	{
+		cout << "IConstructor:\t" << this << endl;
+	}
+	~Iterator()
+	{
+		cout << "IDestructor:\t" << this << endl;
+	}
+	Iterator& operator++()
+	{
+		Temp = Temp->pNext;
+		return *this;
+	}
+	Iterator operator++(int)
+	{
+		Iterator old = *this;
+		Temp = Temp->pNext;
+		return old;
+	}
+	bool operator ==(const Iterator& other)const
+	{
+		return this->Temp == other.Temp;
+	}
+	bool operator !=(const Iterator& other)const
+	{
+		return this->Temp != other.Temp;
+	}
+	int operator*()const
+	{
+		return Temp->Data;
+	}
+	int& operator*()
+	{
+		return Temp->Data;
+	}
+};
 
 class ForwardList
 {
 	Element* Head; // Голова списка, указывает на начальный элемент списка
 	int size;
 public:
+	Iterator begin()
+	{
+		return Head;
+	}
+	Iterator end()
+	{
+		return nullptr;
+	}
 	int get_size()const
 	{
 		return size;
@@ -67,6 +117,7 @@ public:
 		for (const int* it = il.begin(); it != il.end(); it++)
 		push_back(*it);
 	}
+	
 	~ForwardList()
 	{
 		while (Head)pop_back();
@@ -156,6 +207,20 @@ public:
 		//Temp->pNext = New
 		Temp->pNext = new Element(Data, Temp->pNext);
 		size++;
+	}
+	void erase(int Index)                                  //удаляем значение из списка по заданному индексу
+	{
+		if (Index > size) { cout << "Error: " << endl; return; }
+		if (Index == size)return pop_back();
+		else
+		{
+			Element* Temp = Head;                                       //Итератор 
+			for (int i = 0; i < Index - 2; i++) { Temp = Temp->pNext; } //-2 т.к. перед удаляемым
+			Element* erased = Temp->pNext;                              //указатель  на удаляем элемент
+			Temp->pNext = Temp->pNext->pNext;
+			delete erased;
+			size--;
+		}
 	}
 	//                Removing elemets:
 	void pop_front()
@@ -371,12 +436,17 @@ void main()
 #ifdef RANGE_BASED_FOR_LIST
 	ForwardList list = { 3, 5, 8, 13, 21 };
 	//list.print();
-	//for (int i : list)
-	for (int i = 0; i < sizeof(ForwardList); i++)
+	for (int i : list)
 	{
-		cout << list[i] << tab;
+		cout << i << tab;
 	}
 	cout << endl;
+	for (Iterator it = list.begin(); it != list.end(); ++it)
+	{
+		cout << *it << endl;
+	}
+
 #endif // RANGE_BASED_FOR_LIST
+
 
 }
