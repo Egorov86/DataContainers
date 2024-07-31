@@ -445,7 +445,6 @@ void main()
 	{
 		cout << *it << endl;
 	}
-
 #endif // RANGE_BASED_FOR_LIST
 
 
