@@ -64,6 +64,26 @@ public:
 		size++;
 		
 	}
+	void push_back(int Data)
+	{
+		Element* New = new Element(Data);
+		if (Head == nullptr && Tail == nullptr)
+		{
+			Head = Tail = New;
+		}
+		else
+		{
+			//1)создаем новый элемент
+
+			//2)Привязываем новый Элемент к концу списка
+			Tail->pNext = New;
+			New->pPrev = Tail;
+			Tail = New;    // обновляю Tail
+
+		}
+		size++;
+
+	}
 	void print()const
 	{
 		for (Element* Temp = Head; Temp; Temp = Temp->pNext)
@@ -72,7 +92,7 @@ public:
 	}
 	void reverse_print()const
 	{
-		for (Element* Temp = Head; Temp; Temp = Temp->pNext)
+		for (Element* Temp = Tail; Temp!=Head; Temp = Temp->pNext)
 			cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 		cout << "Количество элементов в списке:" << size << endl;
 	}
@@ -89,5 +109,10 @@ void main()
 		list.push_front(rand() % 100);
 	}
 	list.print();
-	//list.reverse_print();
+	cout << delimiter << endl;
+	list.push_back(123);
+	cout << delimiter << endl;
+    list.print();
+	cout << delimiter << endl;
+	list.reverse_print();
 }
