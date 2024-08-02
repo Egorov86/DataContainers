@@ -39,6 +39,7 @@ public:
 	}
 	~List()
 	{
+		while (Tail)pop_back();
 		cout << "LDestructor:\t" << this << endl;
 	}
 	//     Adding elements:
@@ -66,38 +67,24 @@ public:
 	}
 	void push_back(int Data)
 	{
-		Element* New = new Element(Data);
 		if (Head == nullptr && Tail == nullptr)
 		{
-			Head = Tail = New;
+			Head = Tail = new Element(Data);
 		}
 		else
 		{
 			//1)создаем новый элемент
-
+			Element* New = new Element(Data);
 			//2)Привязываем новый Элемент к концу списка
-			Tail->pNext = New;
 			New->pPrev = Tail;
-			Tail = New;    // обновляю Tail
+			Tail->pNext = New;
+			Tail = New;         // cмещаем хвост на новый элемент.
 
 		}
 		size++;
 
 	}
-	void pop_front()
-	{
-		delete Head;
-		Head = Head->pNext;
-		size--;
-	}
-	void pop_back()
-	{
-		Element* Temp = Head;
-		while (Temp->pNext->pNext)Temp = Temp->pNext;
-		delete Temp->pNext;
-		Temp->pNext = nullptr;
-		size--;
-	}
+	//                        Methods;
 	void print()const
 	{
 		for (Element* Temp = Head; Temp; Temp = Temp->pNext)
@@ -106,12 +93,75 @@ public:
 	}
 	void reverse_print()const
 	{
-		for (Element* Temp = Tail; Temp!=Head; Temp = Temp->pNext)
+		for (Element* Temp = Tail; Temp; Temp = Temp->pPrev)
 			cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 		cout << "Количество элементов в списке:" << size << endl;
 	}
-};
 
+
+	void insert(int Data, int Index)
+	{
+		if (Index > size)return;
+		if (Index == 0)return push_front(Data);
+		if (Index == size)return push_back(Data);
+		Element* Temp;
+		if (Index < size / 2)
+		{
+			Temp = Head;
+			for (int i = 0; i < Index; i++)Temp = Temp->pNext;
+		}
+		else
+		{
+			Temp = Tail;
+			for (int i = 0; i < size - Index - 1; i++) Temp = Temp->pPrev;
+		}
+		Element* New = new Element(Data);
+		// вместо нулей элемента меняем указатели pNext и pPrev
+		New->pNext = Temp;   //указывает на 8
+		New->pPrev = Temp->pPrev;
+		Temp->pPrev->pNext = New;
+		Temp->pPrev = New;
+		size++;
+	}
+
+	//                         Removing alements
+	void pop_front()
+	{
+		if (Head == nullptr && Tail == nullptr)return;
+		if (Head == Tail)
+		{
+			delete Head;
+			Head = Tail = nullptr;
+		}
+		else
+		{
+			//1)смещаем голову на следующий элемент
+			Head = Head->pNext;
+			//2)удаляем элемент Head->pPrev из памяти
+			delete Head->pPrev;
+			//3)Зануляем указатель 'Head->pPrev'
+			Head->pPrev = nullptr;
+		}
+		size--;
+	}
+	void pop_back()
+	{
+		/*if (Head == nullptr && Tail == nullptr)return;
+		if (Head == Tail)
+		{
+			delete Head;
+			Head = Tail = nullptr;
+		}*/
+		if (Head == Tail)return pop_front();
+		else
+		{
+			Tail = Tail->pPrev;
+			delete Tail->pNext;
+			Tail->pNext = nullptr;
+		}
+		size--;
+	}
+};
 void main()
 {
 	setlocale(LC_ALL, "Rus");
@@ -120,15 +170,16 @@ void main()
 	List list;
 	for (int i = 0; i < n; i++)
 	{
-		list.push_front(rand() % 100);
+		list.push_back(rand() % 100);
+		//list.push_front(rand() % 100);
 	}
 	list.print();
+	cout << delimiter << endl;
+	list.reverse_print();
 	cout << delimiter << endl;
 	list.push_back(123);
 	cout << delimiter << endl;
     list.print();
-	cout << delimiter << endl;
-	//list.reverse_print();
 	cout << delimiter << endl;
 	list.pop_front();
 	cout << delimiter << endl;
@@ -137,4 +188,12 @@ void main()
 	list.pop_back();
 	cout << delimiter << endl;
 	list.print();
+	int Index;
+	int value;
+	cout << " Введите индекс добавляемого элемента: "; cin >> Index;
+	cout << " Введите значение добавляемого элемента: "; cin >> value;
+	list.insert(value, Index);
+	list.print();
+	cout << delimiter << endl;
+	list.reverse_print();
 }
