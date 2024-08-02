@@ -1,4 +1,4 @@
-#include<iostream>
+п»ї#include<iostream>
 using namespace std;
 using std::cin;
 using std::cout;
@@ -10,9 +10,9 @@ class List
 {
 	class Element
 	{
-		int Data; // значение элемента
-		Element* pNext; //указатель на след элемент
-		Element* pPrev; //указатель на пред элемент
+		int Data; // Р·РЅР°С‡РµРЅРёРµ СЌР»РµРјРµРЅС‚Р°
+		Element* pNext; //СѓРєР°Р·Р°С‚РµР»СЊ РЅР° СЃР»РµРґ СЌР»РµРјРµРЅС‚
+		Element* pPrev; //СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РїСЂРµРґ СЌР»РµРјРµРЅС‚
 	public:
 		Element(int Data, Element* pNext = nullptr, Element* pPrev = nullptr) :Data(Data), pNext(pNext), pPrev(pPrev)
 		{
@@ -23,13 +23,13 @@ class List
 			cout << "EDestructor:\t" << this << endl;
 		}
 		friend class List;
-	}*Head, * Tail; // Объекты класса можно объявлять непосредственно после его описания.
+	}*Head, * Tail; // РћР±СЉРµРєС‚С‹ РєР»Р°СЃСЃР° РјРѕР¶РЅРѕ РѕР±СЉСЏРІР»СЏС‚СЊ РЅРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ РїРѕСЃР»Рµ РµРіРѕ РѕРїРёСЃР°РЅРёСЏ.
 	//Element* Head;
 	//Element* Tail;
-	size_t size;     // size_t - это typedef на 'unsigned int'
-	// Директива  'typedef' создает псевдоним для существующего типа данных.
-	//"typedef" имеет следующий синтаксис:
-	//                  typedef существует_тип_данных псевдоним
+	size_t size;     // size_t - СЌС‚Рѕ typedef РЅР° 'unsigned int'
+	// Р”РёСЂРµРєС‚РёРІР°  'typedef' СЃРѕР·РґР°РµС‚ РїСЃРµРІРґРѕРЅРёРј РґР»СЏ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ С‚РёРїР° РґР°РЅРЅС‹С….
+	//"typedef" РёРјРµРµС‚ СЃР»РµРґСѓСЋС‰РёР№ СЃРёРЅС‚Р°РєСЃРёСЃ:
+	//                  typedef СЃСѓС‰РµСЃС‚РІСѓРµС‚_С‚РёРї_РґР°РЅРЅС‹С… РїСЃРµРІРґРѕРЅРёРј
 public:
 	List()
 	{
@@ -50,15 +50,15 @@ public:
 		}
 		else
 		{
-			//1)создаем новый элемент
+			//1)СЃРѕР·РґР°РµРј РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚
 			Element* New = new Element(Data);
 
-			//2)Привязываем новый Элеимент к началу списка
+			//2)РџСЂРёРІСЏР·С‹РІР°РµРј РЅРѕРІС‹Р№ Р­Р»РµРёРјРµРЅС‚ Рє РЅР°С‡Р°Р»Сѓ СЃРїРёСЃРєР°
 			New->pNext = Head; Head = New;
 
-			//3)Привязываем головной элемент списка к новому элементу
+			//3)РџСЂРёРІСЏР·С‹РІР°РµРј РіРѕР»РѕРІРЅРѕР№ СЌР»РµРјРµРЅС‚ СЃРїРёСЃРєР° Рє РЅРѕРІРѕРјСѓ СЌР»РµРјРµРЅС‚Сѓ
 			//Head->pPrev = New;
-			//4)Смещаем голову на новый элемент
+			//4)РЎРјРµС‰Р°РµРј РіРѕР»РѕРІСѓ РЅР° РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚
 			//Head = New;
 		}
 		size++;
@@ -73,12 +73,12 @@ public:
 		}
 		else
 		{
-			//1)создаем новый элемент
+			//1)СЃРѕР·РґР°РµРј РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚
 
-			//2)Привязываем новый Элемент к концу списка
+			//2)РџСЂРёРІСЏР·С‹РІР°РµРј РЅРѕРІС‹Р№ Р­Р»РµРјРµРЅС‚ Рє РєРѕРЅС†Сѓ СЃРїРёСЃРєР°
 			Tail->pNext = New;
 			New->pPrev = Tail;
-			Tail = New;    // обновляю Tail
+			Tail = New;    // РѕР±РЅРѕРІР»СЏСЋ Tail
 
 		}
 		size++;
@@ -102,13 +102,13 @@ public:
 	{
 		for (Element* Temp = Head; Temp; Temp = Temp->pNext)
 			cout << Temp->pPrev << tab << Temp << tab<< Temp->Data << tab << Temp->pNext << endl;
-		cout << "Количество элементов в списке:" << size <<endl;
+		cout << "РљРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РІ СЃРїРёСЃРєРµ:" << size <<endl;
 	}
 	void reverse_print()const
 	{
 		for (Element* Temp = Tail; Temp!=Head; Temp = Temp->pNext)
 			cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
-		cout << "Количество элементов в списке:" << size << endl;
+		cout << "РљРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РІ СЃРїРёСЃРєРµ:" << size << endl;
 	}
 };
 
@@ -116,7 +116,7 @@ void main()
 {
 	setlocale(LC_ALL, "Rus");
 	int n;
-	cout << "Введите размер списка\t"; cin >> n;
+	cout << "Р’РІРµРґРёС‚Рµ СЂР°Р·РјРµСЂ СЃРїРёСЃРєР°\t"; cin >> n;
 	List list;
 	for (int i = 0; i < n; i++)
 	{
