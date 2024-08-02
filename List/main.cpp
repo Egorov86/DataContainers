@@ -84,6 +84,20 @@ public:
 		size++;
 
 	}
+	void pop_front()
+	{
+		delete Head;
+		Head = Head->pNext;
+		size--;
+	}
+	void pop_back()
+	{
+		Element* Temp = Head;
+		while (Temp->pNext->pNext)Temp = Temp->pNext;
+		delete Temp->pNext;
+		Temp->pNext = nullptr;
+		size--;
+	}
 	void print()const
 	{
 		for (Element* Temp = Head; Temp; Temp = Temp->pNext)
@@ -114,5 +128,13 @@ void main()
 	cout << delimiter << endl;
     list.print();
 	cout << delimiter << endl;
-	list.reverse_print();
+	//list.reverse_print();
+	cout << delimiter << endl;
+	list.pop_front();
+	cout << delimiter << endl;
+	list.print();
+	cout << delimiter << endl;
+	list.pop_back();
+	cout << delimiter << endl;
+	list.print();
 }
