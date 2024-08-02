@@ -59,7 +59,7 @@ public:
 	{
 		return this->Temp != other.Temp;
 	}
-	int operator*()const
+	const int operator*()const
 	{
 		return Temp->Data;
 	}
@@ -114,7 +114,7 @@ public:
 		// begin() - возвращ итератор на начало контейнера
 		// end() - возвращ итератор на конец контейнера
 		//il.
-		for (const int* it = il.begin(); it != il.end(); it++)
+		for (const int* it = il.begin(); it != il.end(); ++it)
 		push_back(*it);
 	}
 	
@@ -332,6 +332,7 @@ void Print(int arr[])
 //#define INITIALIZER_LIST_CONSTRUCTOR
 //#define RANGE_BASED_FOR_ARRAY
 #define RANGE_BASED_FOR_LIST
+#define ITERATOR_CHECK
 void main()
 {
 	setlocale(LC_ALL, "Rus");

@@ -37,11 +37,71 @@ public:
 		size = 0;
 		cout << "LConstructor:\t" << this << endl;
 	}
+	List(const std::initializer_list <int>& il) :List()
+	{   //
+		//initializer_list (список инициализации) - это контейнер, так же как и Forwardlist
+		// Контейнер - это объект, который организует хранение других объектов в памяти
+		// У любого контейнера в обязательном порядке есть два метода begin() и end()
+		// begin() - возвращ итератор на начало контейнера
+		// end() - возвращ итератор на конец контейнера
+		//il.
+	
+		for (int const* it = il.begin(); it != il.end(); ++it)
+			push_back(*it);
+	}
 	~List()
 	{
 		while (Tail)pop_back();
 		cout << "LDestructor:\t" << this << endl;
 	}
+	Iterator(Element* Temp) :Temp(Temp)
+	{
+		cout << "IConstructor:\t" << this << endl;
+	}
+	~Iterator()
+	{
+		cout << "IDestructor:\t" << this << endl;
+	}
+	Iterator& operator++()
+	{
+		Temp = Temp->pNext;
+		return *this;
+	}
+	Iterator operator++(int)
+	{
+		Iterator old = *this;
+		Temp = Temp->pNext;
+		return old;
+	}
+	Iterator& operator--()
+	{
+		Temp = Temp->pPrev;
+		return *this;
+	}
+	Iterator operator--(int)
+	{
+		Iterator old = *this;
+		Temp = Temp->pPrev;
+		return old;
+	}
+	//                          Comparison operators:
+	bool operator == (const Iterator& other) const
+	{
+		return this->Temp == other.Temp;
+	}
+	bool operator != (const Iterator& other) const
+	{
+		return this->Temp == other.Temp;
+	}
+	const int& operator*()const // конст для конси объекта
+	{
+		return Temp->Data;
+	}
+	int& operator*()            // неконст для неконст объекта, который можно изменить
+	{
+		return Temp->Data;
+	}
+
 	//     Adding elements:
 	void push_front(int Data)
 	{
@@ -162,9 +222,12 @@ public:
 		size--;
 	}
 };
+//#define BASE_CHECK
+
 void main()
 {
 	setlocale(LC_ALL, "Rus");
+#ifdef BASE_CHECK
 	int n;
 	cout << "Введите размер списка\t"; cin >> n;
 	List list;
@@ -179,7 +242,7 @@ void main()
 	cout << delimiter << endl;
 	list.push_back(123);
 	cout << delimiter << endl;
-    list.print();
+	list.print();
 	cout << delimiter << endl;
 	list.pop_front();
 	cout << delimiter << endl;
@@ -196,4 +259,12 @@ void main()
 	list.print();
 	cout << delimiter << endl;
 	list.reverse_print();
+#endif // BASE_CHECK
+	List list = { 3, 5, 8, 13, 21 };
+	list.print();
+	for (int i : list) cout << i << tab;cout << endl;
+	
+	List::Iterator it;
+	*it;
+
 }
