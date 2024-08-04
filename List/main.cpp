@@ -145,20 +145,6 @@ public:
 
 	}
 	//                        Methods;
-	void print()const
-	{
-		for (Element* Temp = Head; Temp; Temp = Temp->pNext)
-			cout << Temp->pPrev << tab << Temp << tab<< Temp->Data << tab << Temp->pNext << endl;
-		cout << "Количество элементов в списке:" << size <<endl;
-	}
-	void reverse_print()const
-	{
-		for (Element* Temp = Tail; Temp; Temp = Temp->pPrev)
-			cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
-		cout << "Количество элементов в списке:" << size << endl;
-	}
-
-
 	void insert(int Data, int Index)
 	{
 		if (Index > size)return;
@@ -183,7 +169,6 @@ public:
 		Temp->pPrev = New;
 		size++;
 	}
-
 	//                         Removing alements
 	void pop_front()
 	{
@@ -220,6 +205,18 @@ public:
 			Tail->pNext = nullptr;
 		}
 		size--;
+	}
+	void print()const
+	{
+		for (Element* Temp = Head; Temp; Temp = Temp->pNext)
+			cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
+		cout << "Количество элементов в списке:" << size << endl;
+	}
+	void reverse_print()const
+	{
+		for (Element* Temp = Tail; Temp; Temp = Temp->pPrev)
+			cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
+		cout << "Количество элементов в списке:" << size << endl;
 	}
 };
 //#define BASE_CHECK
@@ -261,10 +258,10 @@ void main()
 	list.reverse_print();
 #endif // BASE_CHECK
 	List list = { 3, 5, 8, 13, 21 };
-	list.print();
+	/*list.print();
 	for (int i : list) cout << i << tab;cout << endl;
 	
 	List::Iterator it;
-	*it;
+	*it;*/
 
 }
