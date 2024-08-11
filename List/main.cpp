@@ -16,14 +16,19 @@ class List
 	public:
 		Element(int Data, Element* pNext = nullptr, Element* pPrev = nullptr) :Data(Data), pNext(pNext), pPrev(pPrev)
 		{
+#ifdef DEBUG
 			cout << "EConstructor:\t" << this << endl;
+#endif // DEBUG
 		}
 		~Element()
 		{
+#ifdef DEBUG
 			cout << "EDestructor:\t" << this << endl;
+#endif // DEBUG
+
 		}
 		friend class List;
-	}*Head, * Tail; // Объекты класса можно объявлять непосредственно после его описания.
+	}*Head, *Tail; // Объекты класса можно объявлять непосредственно после его описания.
 	//Element* Head;
 	//Element* Tail;
 	size_t size;     // size_t - это typedef на 'unsigned int'
@@ -37,13 +42,19 @@ public:
 		Element* Temp;
 	public:
 	
-		Iterator(Element* Temp) :Temp(Temp)
+		Iterator(Element* Temp = nullptr) :Temp(Temp)
 		{
+#ifdef DEBUG
 			cout << "ItConstructor:\t" << this << endl;
+#endif // DEBUG
+
 		}
 		~Iterator()
 		{
+#ifdef DEBUG
 			cout << "ItDestructor:\t" << this << endl;
+#endif // DEBUG
+
 		}
 		Iterator& operator++()
 		{
@@ -52,7 +63,7 @@ public:
 			return *this;
 		}
 		Iterator operator++(int)
-		{
+		{   //Suffix increment
 			Iterator old = *this;
 			Temp = Temp->pNext;
 			return old;
@@ -96,7 +107,9 @@ public:
 		}
 		~ReverseIterator()
 		{
+#ifdef DEBUG
 			cout << "RItDestructor:\t" << this << endl;
+#endif // DEBUG
 		}
 		//                 Increment/Decrement:
 		ReverseIterator& operator++()
@@ -140,6 +153,14 @@ public:
 			return Temp->Data;
 		}
 	};
+	Iterator begin()
+	{
+		return Head;
+	}
+	Iterator end()
+	{
+		return nullptr;
+	}
 	Iterator begin()const
 	{
 		return Head;
@@ -221,7 +242,9 @@ public:
 			//1)создаем новый элемент
 			Element* New = new Element(Data);
 			//2)Привязываем новый Элемент к концу списка
-			New->pPrev = Tail;Tail = New;   // cмещаем хвост на новый элемент.
+			New->pPrev = Tail;
+			Tail->pNext = New;
+			Tail = New;   // cмещаем хвост на новый элемент.
 		}
 		size++;
 
@@ -272,13 +295,13 @@ public:
 	}
 	void pop_back()
 	{
-		/*if (Head == nullptr && Tail == nullptr)return;
+		if (Head == nullptr && Tail == nullptr)return;
 		if (Head == Tail)
 		{
 			delete Head;
 			Head = Tail = nullptr;
-		}*/
-		if (Head == Tail)return pop_front();
+		}
+		//if (Head == Tail)return pop_front();
 		else
 		{
 			Tail = Tail->pPrev;
@@ -369,8 +392,8 @@ void main()
 	cout << endl;
 #endif // ITERATORS_CHECK
 
-	List list1 = {3, 5, 8, 13, 21 };
-	List list2 = {34, 55, 89 };
+	List list1 = { 3, 5, 8, 13, 21 };
+	List list2 = { 34, 55, 89 };
 	List list3 = list1 + list2;
 	for (int i : list1)cout << i << tab; cout << endl;
 	for (int i : list2)cout << i << tab; cout << endl;
