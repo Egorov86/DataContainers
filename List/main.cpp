@@ -39,14 +39,15 @@ public:
 	
 		Iterator(Element* Temp) :Temp(Temp)
 		{
-			cout << "IConstructor:\t" << this << endl;
+			cout << "ItConstructor:\t" << this << endl;
 		}
 		~Iterator()
 		{
-			cout << "IDestructor:\t" << this << endl;
+			cout << "ItDestructor:\t" << this << endl;
 		}
 		Iterator& operator++()
 		{
+			//Prefix increment
 			Temp = Temp->pNext;
 			return *this;
 		}
@@ -74,7 +75,7 @@ public:
 		}
 		bool operator != (const Iterator& other) const
 		{
-			return this->Temp == other.Temp;
+			return this->Temp != other.Temp;
 		}
 		const int& operator*()const // конст для конси объекта
 		{
@@ -208,7 +209,6 @@ public:
 			//Head = New;
 		}
 		size++;
-		
 	}
 	void push_back(int Data)
 	{
@@ -221,10 +221,7 @@ public:
 			//1)создаем новый элемент
 			Element* New = new Element(Data);
 			//2)Привязываем новый Элемент к концу списка
-			New->pPrev = Tail;
-			Tail->pNext = New;
-			Tail = New;         // cмещаем хвост на новый элемент.
-
+			New->pPrev = Tail;Tail = New;   // cмещаем хвост на новый элемент.
 		}
 		size++;
 
@@ -268,9 +265,8 @@ public:
 			//1)смещаем голову на следующий элемент
 			Head = Head->pNext;
 			//2)удаляем элемент Head->pPrev из памяти
-			delete Head->pPrev;
+			delete Head->pPrev; Head->pPrev = nullptr;
 			//3)Зануляем указатель 'Head->pPrev'
-			Head->pPrev = nullptr;
 		}
 		size--;
 	}
@@ -286,8 +282,7 @@ public:
 		else
 		{
 			Tail = Tail->pPrev;
-			delete Tail->pNext;
-			Tail->pNext = nullptr;
+			delete Tail->pNext;Tail->pNext = nullptr;
 		}
 		size--;
 	}
@@ -374,8 +369,8 @@ void main()
 	cout << endl;
 #endif // ITERATORS_CHECK
 
-	List list1 = { 3, 5, 8, 13, 21 };
-	List list2 = { 34, 55, 89 };
+	List list1 = {3, 5, 8, 13, 21 };
+	List list2 = {34, 55, 89 };
 	List list3 = list1 + list2;
 	for (int i : list1)cout << i << tab; cout << endl;
 	for (int i : list2)cout << i << tab; cout << endl;
