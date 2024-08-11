@@ -31,77 +31,162 @@ class List
 	//"typedef" имеет следующий синтаксис:
 	//                  typedef существует_тип_данных псевдоним
 public:
+	
+	class Iterator
+	{
+		Element* Temp;
+	public:
+	
+		Iterator(Element* Temp) :Temp(Temp)
+		{
+			cout << "IConstructor:\t" << this << endl;
+		}
+		~Iterator()
+		{
+			cout << "IDestructor:\t" << this << endl;
+		}
+		Iterator& operator++()
+		{
+			Temp = Temp->pNext;
+			return *this;
+		}
+		Iterator operator++(int)
+		{
+			Iterator old = *this;
+			Temp = Temp->pNext;
+			return old;
+		}
+		Iterator& operator--()
+		{
+			Temp = Temp->pPrev;
+			return *this;
+		}
+		Iterator operator--(int)
+		{
+			Iterator old = *this;
+			Temp = Temp->pPrev;
+			return old;
+		}
+		//                          Comparison operators:
+		bool operator == (const Iterator& other) const
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator != (const Iterator& other) const
+		{
+			return this->Temp == other.Temp;
+		}
+		const int& operator*()const // конст для конси объекта
+		{
+			return Temp->Data;
+		}
+		int& operator*()            // неконст для неконст объекта, который можно изменить
+		{
+			return Temp->Data;
+		}
+	};
+	class ReverseIterator
+	{
+		Element* Temp;
+	public:
+		ReverseIterator(Element* Temp = nullptr) :Temp(Temp)
+		{
+			cout << "RItConstructor:\t" << this << endl;
+		}
+		~ReverseIterator()
+		{
+			cout << "RItDestructor:\t" << this << endl;
+		}
+		//                 Increment/Decrement:
+		ReverseIterator& operator++()
+		{
+			Temp = Temp->pPrev;
+			return *this;
+		}
+		ReverseIterator& operator++(int)
+		{
+			ReverseIterator old = *this;
+			Temp = Temp->pPrev;
+			return old;
+		}
+		ReverseIterator& operator--()
+		{
+			Temp = Temp->pNext;
+			return *this;
+		}
+		ReverseIterator& operator--(int)
+		{
+			ReverseIterator old = *this;
+			Temp = Temp->pNext;
+			return old;
+		}
+		//                Comparison operators:
+		bool operator==(const ReverseIterator& other)const
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator!=(const ReverseIterator& other)const
+		{
+			return this->Temp != other.Temp;
+		}
+		//        Dereference operators (операторы разыменования)
+		const int& operator*()const
+		{
+			return Temp->Data;
+		}
+		int& operator*()
+		{
+			return Temp->Data;
+		}
+	};
+	Iterator begin()const
+	{
+		return Head;
+	}
+	Iterator end()const
+	{
+		return nullptr;
+	}
+	ReverseIterator rbegin()
+	{
+		return Tail;
+	}
+	ReverseIterator rend()
+	{
+		return nullptr;
+	}
 	List()
 	{
 		Head = Tail = nullptr;
 		size = 0;
 		cout << "LConstructor:\t" << this << endl;
 	}
-	List(const std::initializer_list <int>& il) :List()
-	{   //
-		//initializer_list (список инициализации) - это контейнер, так же как и Forwardlist
-		// Контейнер - это объект, который организует хранение других объектов в памяти
-		// У любого контейнера в обязательном порядке есть два метода begin() и end()
-		// begin() - возвращ итератор на начало контейнера
-		// end() - возвращ итератор на конец контейнера
-		//il.
-	
+	List(const std::initializer_list<int>& il) :List()
+	{
 		for (int const* it = il.begin(); it != il.end(); ++it)
+		{
 			push_back(*it);
+		}
+	}
+	List(const List& other) :List()
+	{
+		*this = other;
+		cout << "CopyConstructor:\t" << this << endl;
 	}
 	~List()
 	{
 		while (Tail)pop_back();
 		cout << "LDestructor:\t" << this << endl;
 	}
-	Iterator(Element* Temp) :Temp(Temp)
+	//                      Operators:
+	List& operator=(const List& other)
 	{
-		cout << "IConstructor:\t" << this << endl;
-	}
-	~Iterator()
-	{
-		cout << "IDestructor:\t" << this << endl;
-	}
-	Iterator& operator++()
-	{
-		Temp = Temp->pNext;
+		if (this == &other)return *this;
+		while (Head)pop_front();
+		for (Element* Temp = other.Head; Temp; Temp = Temp->pNext)push_back(Temp->Data);
+		cout << "CopyAssignment:\t" << this << endl;
 		return *this;
 	}
-	Iterator operator++(int)
-	{
-		Iterator old = *this;
-		Temp = Temp->pNext;
-		return old;
-	}
-	Iterator& operator--()
-	{
-		Temp = Temp->pPrev;
-		return *this;
-	}
-	Iterator operator--(int)
-	{
-		Iterator old = *this;
-		Temp = Temp->pPrev;
-		return old;
-	}
-	//                          Comparison operators:
-	bool operator == (const Iterator& other) const
-	{
-		return this->Temp == other.Temp;
-	}
-	bool operator != (const Iterator& other) const
-	{
-		return this->Temp == other.Temp;
-	}
-	const int& operator*()const // конст для конси объекта
-	{
-		return Temp->Data;
-	}
-	int& operator*()            // неконст для неконст объекта, который можно изменить
-	{
-		return Temp->Data;
-	}
-
 	//     Adding elements:
 	void push_front(int Data)
 	{
@@ -219,7 +304,19 @@ public:
 		cout << "Количество элементов в списке:" << size << endl;
 	}
 };
+List operator+(const List& left, const List& right)
+{
+	List buffer = left;
+	for (List::Iterator it = right.begin(); it != right.end(); ++it)
+	{
+		buffer.push_back(*it);
+		*it *= 10;
+	}
+	return buffer;
+}
 //#define BASE_CHECK
+//#define ITERATORS_CHECK
+#define OPERATOR_PLUS_CHECK
 
 void main()
 {
@@ -257,11 +354,30 @@ void main()
 	cout << delimiter << endl;
 	list.reverse_print();
 #endif // BASE_CHECK
-	List list = { 3, 5, 8, 13, 21 };
-	/*list.print();
-	for (int i : list) cout << i << tab;cout << endl;
-	
-	List::Iterator it;
-	*it;*/
 
+#ifdef ITERATORS_CHECK
+	List list = { 3, 5, 8, 13, 21 };
+	//list.print();
+	for (int i : list) cout << i << tab; cout << endl;
+
+	//List::Iterator it;
+	//const int jt = *it;
+	for (List::Iterator it = list.begin(); it != list.end(); ++it)
+	{
+		cout << *it << tab;
+	}
+	cout << endl;
+	for (List::ReverseIterator it = list.rbegin(); it != list.rend(); ++it)
+	{
+		cout << *it << tab;
+	}
+	cout << endl;
+#endif // ITERATORS_CHECK
+
+	List list1 = { 3, 5, 8, 13, 21 };
+	List list2 = { 34, 55, 89 };
+	List list3 = list1 + list2;
+	for (int i : list1)cout << i << tab; cout << endl;
+	for (int i : list2)cout << i << tab; cout << endl;
+	for (int i : list3)cout << i << tab; cout << endl;
 }
