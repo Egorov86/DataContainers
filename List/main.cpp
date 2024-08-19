@@ -6,15 +6,15 @@ using std::endl;
 
 #define tab "\t"
 #define delimiter "\n-----------------------------------------------------\n"
-class List
+template <typename T> class List
 {
 	class Element
 	{
-		int Data; // значение элемента
+		T Data; // значение элемента
 		Element* pNext; //указатель на след элемент
 		Element* pPrev; //указатель на пред элемент
 	public:
-		Element(int Data, Element* pNext = nullptr, Element* pPrev = nullptr) :Data(Data), pNext(pNext), pPrev(pPrev)
+		Element(T Data, Element* pNext = nullptr, Element* pPrev = nullptr) :Data(Data), pNext(pNext), pPrev(pPrev)
 		{
 #ifdef DEBUG
 			cout << "EConstructor:\t" << this << endl;
@@ -57,7 +57,7 @@ class List
 		{
 			return this->Temp != other.Temp;
 		}
-		const int& operator*()const // конст для конси объекта
+		const T& operator*()const // конст для конси объекта
 		{
 			return Temp->Data;
 		}
@@ -199,7 +199,7 @@ public:
 			push_back(*it);
 		}
 	}
-	List(const List& other) :List()
+	List(const List<T>& other) :List()
 	{
 		*this = other;
 		cout << "CopyConstructor:\t" << this << endl;
