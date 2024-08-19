@@ -35,6 +35,37 @@ class List
 	// Директива  'typedef' создает псевдоним для существующего типа данных.
 	//"typedef" имеет следующий синтаксис:
 	//                  typedef существует_тип_данных псевдоним
+
+	class ConstBaseIterator
+	{
+		Element* Temp;
+	public:
+		ConstBaseIterator(Element* Temp = nullptr) : Temp(Temp)
+		{
+			cout << " CBItConstructor:\t" << this << endl;
+		}
+		~ConstBaseIterator()
+		{
+			cout << " CBItDestructor:\t" << this << endl;
+		}
+		//                          Comparison operators:
+		bool operator == (const ConstBaseIterator& other) const
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator != (const ConstBaseIterator& other) const
+		{
+			return this->Temp != other.Temp;
+		}
+		const int& operator*()const // конст для конси объекта
+		{
+			return Temp->Data;
+		}
+		int& operator*()            // неконст для неконст объекта, который можно изменить
+		{
+			return Temp->Data;
+		}
+	};
 public:
 	
 	class Iterator
@@ -79,38 +110,15 @@ public:
 			Temp = Temp->pPrev;
 			return old;
 		}
-		//                          Comparison operators:
-		bool operator == (const Iterator& other) const
-		{
-			return this->Temp == other.Temp;
-		}
-		bool operator != (const Iterator& other) const
-		{
-			return this->Temp != other.Temp;
-		}
-		const int& operator*()const // конст для конси объекта
-		{
-			return Temp->Data;
-		}
-		int& operator*()            // неконст для неконст объекта, который можно изменить
-		{
-			return Temp->Data;
-		}
+		
 	};
-	class ReverseIterator
+	class ReverseIterator: public ConstBaseIterator
 	{
 		Element* Temp;
 	public:
-		ReverseIterator(Element* Temp = nullptr) :Temp(Temp)
-		{
-			cout << "RItConstructor:\t" << this << endl;
-		}
-		~ReverseIterator()
-		{
-#ifdef DEBUG
-			cout << "RItDestructor:\t" << this << endl;
-#endif // DEBUG
-		}
+		ReverseIterator(Element* Temp = nullptr) : ConstBaseIterator(Temp)
+       ~ReverseIterator() {}
+
 		//                 Increment/Decrement:
 		ReverseIterator& operator++()
 		{
@@ -187,6 +195,7 @@ public:
 	{
 		for (int const* it = il.begin(); it != il.end(); ++it)
 		{
+			//push_front(*it);
 			push_back(*it);
 		}
 	}
@@ -219,10 +228,10 @@ public:
 		else
 		{
 			//1)создаем новый элемент
-			Element* New = new Element(Data);
+			//Element* New = new Element(Data, Head);
 
 			//2)Привязываем новый Элеимент к началу списка
-			New->pNext = Head; Head = New;
+		    Head = Head->pPrev = new Element(Data, Head);
 
 			//3)Привязываем головной элемент списка к новому элементу
 			//Head->pPrev = New;
@@ -239,12 +248,13 @@ public:
 		}
 		else
 		{
-			//1)создаем новый элемент
+			Tail = Tail->pNext = new Element(Data, nullptr, Tail);
+			/*//1)создаем новый элемент
 			Element* New = new Element(Data);
 			//2)Привязываем новый Элемент к концу списка
 			New->pPrev = Tail;
 			Tail->pNext = New;
-			Tail = New;   // cмещаем хвост на новый элемент.
+			Tail = New;   // cмещаем хвост на новый элемент.*/
 		}
 		size++;
 
@@ -266,12 +276,14 @@ public:
 			Temp = Tail;
 			for (int i = 0; i < size - Index - 1; i++) Temp = Temp->pPrev;
 		}
-		Element* New = new Element(Data);
+		Temp->pPrev = Temp->pPrev->pNext = new Element(Data, Temp, Temp->pPrev);
+		
+		/*Element* New = new Element(Data);
 		// вместо нулей элемента меняем указатели pNext и pPrev
 		New->pNext = Temp;   //указывает на 8
 		New->pPrev = Temp->pPrev;
 		Temp->pPrev->pNext = New;
-		Temp->pPrev = New;
+		Temp->pPrev = New;*/
 		size++;
 	}
 	//                         Removing alements
@@ -325,7 +337,7 @@ public:
 List operator+(const List& left, const List& right)
 {
 	List buffer = left;
-	for (List::Iterator it = right.begin(); it != right.end(); ++it)
+	for (List::ConstIterator it = right.begin(); it != right.end(); ++it)
 	{
 		buffer.push_back(*it);
 		*it *= 10;
