@@ -141,6 +141,12 @@ public:
 			return ConstBaseIterator::Temp->Data;
 		}
 	};
+
+	//template <typename T>typename List<T>::ConstIterator List<T>::begin()const
+	// ConstIterator - имя типа.
+	// begin - имя функции.
+	// typename указываем чтобы компилятор 
+
 	ConstIterator begin()const
 	{
 		return Head;
@@ -173,13 +179,13 @@ public:
 	{
 		return nullptr;
 	}
-	List()
+	template<typename T> List<T>::List()
 	{
 		Head = Tail = nullptr;
 		size = 0;
 		cout << "LConstructor:\t" << this << endl;
 	}
-	List(const std::initializer_list<T>& il) :List()
+	template<typename T> List<T>::List(const std::initializer_list<T>& il) :List()
 	{
 		for (T const* it = il.begin(); it != il.end(); ++it)
 		{
@@ -187,18 +193,18 @@ public:
 			push_back(*it);
 		}
 	}
-	List(const List<T>& other) :List()
+	template<typename T>List<T>::List(const List<T>& other) :List()
 	{
 		*this = other;
 		cout << "CopyConstructor:\t" << this << endl;
 	}
-	~List()
+	template<typename T>List<T>~List()
 	{
 		while (Tail)pop_back();
 		cout << "LDestructor:\t" << this << endl;
 	}
 	//                      Operators:
-	List<T>& operator=(const List<T>& other)
+	template<typename T>List<T>& List<T>::operator=(const List<T>& other)
 	{
 		if (this == &other)return *this;
 		while (Head)pop_front();
@@ -207,7 +213,7 @@ public:
 		return *this;
 	}
 	//                          Adding elements:
-	void push_front(T Data)
+	template<typename T>void List<T>::push_front(T Data)
 	{
 		if (Head == nullptr && Tail == nullptr)
 		{
@@ -228,7 +234,7 @@ public:
 		}
 		size++;
 	}
-	void push_back(T Data)
+	template<typename T>void List<T>::push_back(T Data)
 	{
 		if (Head == nullptr && Tail == nullptr)
 		{
@@ -248,7 +254,7 @@ public:
 
 	}
 	//                        Methods;
-	void insert(T Data, int Index)
+	template<typename T>void List<T>::insert(T Data, int Index)
 	{
 		if (Index > size)return;
 		if (Index == 0)return push_front(Data);
@@ -275,7 +281,7 @@ public:
 		size++;
 	}
 	//                         Removing alements
-	void pop_front()
+	template<typename T>void List<T>::pop_front()
 	{
 		if (Head == nullptr && Tail == nullptr)return;
 		if (Head == Tail)
@@ -293,7 +299,7 @@ public:
 		}
 		size--;
 	}
-	void pop_back()
+	template<typename T>void List<T>::pop_back()
 	{
 		if (Head == nullptr && Tail == nullptr)return;
 		if (Head == Tail)
@@ -309,19 +315,20 @@ public:
 		}
 		size--;
 	}
-	void print()const
+	template<typename T>void List<T>::print()const
 	{
 		for (Element* Temp = Head; Temp; Temp = Temp->pNext)
 			cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 		cout << "Количество элементов в списке:" << size << endl;
 	}
-	void reverse_print()const
+	template<typename T>void List<T>::reverse_print()const
 	{
 		for (Element* Temp = Tail; Temp; Temp = Temp->pPrev)
 			cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 		cout << "Количество элементов в списке:" << size << endl;
 	}
 };
+//                          List metods
 template <typename T>List<T> operator+(const List<T>& left, const List<T>& right)
 {
 	List buffer = left;
