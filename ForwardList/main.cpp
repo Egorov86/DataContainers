@@ -24,7 +24,8 @@ public:
 		cout << "EDestructor:\t" << this << endl;
 	}
 	friend class Iterator;
-	friend class ForwardList; // дружеств функция
+	friend class ForwardList; // дружеств класс
+	friend class Stack;
 };
 int Element::count = 0;
 
@@ -71,6 +72,7 @@ public:
 
 class ForwardList
 {
+protected:
 	Element* Head; // Голова списка, указывает на начальный элемент списка
 	int size;
 public:
@@ -325,17 +327,39 @@ void Print(int arr[])
 	}
 	cout << endl;
 }
+
+class Stack : ForwardList
+{
+public:
+	void push(int Data)
+	{
+		push_front(Data);
+	}
+	int pop()
+	{
+		int Data = Head->Data;
+		pop_front();
+		return Data;
+	}
+	int depth()const
+	{
+		return size;
+	}
+};
+
 //#define BASE_CHECK
 //#define COUNT_CHECK
 //#define SIZE_CONSTRUCTOR_CHECK
 //#define OPERATOR_PLUS_CHECK
 //#define INITIALIZER_LIST_CONSTRUCTOR
 //#define RANGE_BASED_FOR_ARRAY
-#define RANGE_BASED_FOR_LIST
-#define ITERATOR_CHECK
+//#define RANGE_BASED_FOR_LIST
+//#define ITERATOR_CHECK
+
 void main()
 {
 	setlocale(LC_ALL, "Rus");
+
 #ifdef BASE_CHECK
 	int n;
 	cout << "Введите кол-во элементов списка: "; cin >> n;
@@ -363,6 +387,7 @@ void main()
 	list.insert(index, value);
 	list.print();
 #endif // BASE_CHECK
+
 #ifdef COUNT_CHECK
 	ForwardList list1;
 	list1.push_back(3);
@@ -372,6 +397,7 @@ void main()
 	list1.push_back(21);
 	list1.print();
 #endif // COUNT_CHECK
+
 #ifdef SIZE_CONSTRUCTOR_CHECK
 	ForwardList list(5);
 	for (int i = 0; i < list.get_size(); i++)
@@ -414,6 +440,7 @@ void main()
 	ForwardList list1 = { 3, 5, 8, 13, 21 }; //instance - экземпляр
 	list1.print();
 #endif // INITIALIZER_LIST_CONSTRUCTOR
+
 #ifdef RANGE_BASED_FOR_ARRAY
 	int arr[] = { 3, 5, 8, 13, 21 };
 	//int* arr = new int[] {3, 5, 8, 13, 21};
@@ -448,5 +475,17 @@ void main()
 	}
 #endif // RANGE_BASED_FOR_LIST
 
+	Stack stack;
+	stack.push(3);
+	stack.push(5);
+	stack.push(8);
+	stack.push(13);
+	stack.push(21);
+	cout << "Depth: " << stack.depth() << endl;
 
+	while (stack.depth())
+	{
+		cout << stack.pop() << endl;
+	}
+	cout << "Depth: " << stack.depth() << endl;
 }

@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\ForwardList\main.cpp" />
     <ClCompile Include="List.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
